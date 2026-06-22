@@ -1,12 +1,9 @@
-import os
 from typing import Literal, TypedDict
 
-from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
 from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
-load_dotenv()
+from services.llm import get_chat_model
 
 AgentType = Literal["travel", "lifestyle", "buying", "communication", "memory"]
 
@@ -32,19 +29,9 @@ class OrchestratorState(TypedDict):
     reasoning: str
 
 
-_classifier = None
-
-
-def _get_classifier():
-    global _classifier
-    if _classifier is None:
-        llm = ChatOpenAI(model="gpt-4o-mini", temperature=0, api_key=os.getenv("OPENAI_API_KEY"))
-        _classifier = llm.with_structured_output(Classification)
-    return _classifier
-
-
 def classify_node(state: OrchestratorState) -> dict:
-    result = _get_classifier().invoke(
+    classifier = get_chat_model().with_structured_output(Classification)
+    result = classifier.invoke(
         [
             ("system", SYSTEM_PROMPT),
             ("human", state["message"]),

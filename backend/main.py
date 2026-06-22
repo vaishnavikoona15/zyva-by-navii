@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import chat
+from routers import chat, lifestyle, travel
 
 app = FastAPI(title="Zyva API")
 
@@ -14,6 +14,8 @@ app.add_middleware(
 )
 
 app.include_router(chat.router)
+app.include_router(travel.router)
+app.include_router(lifestyle.router)
 
 
 @app.get("/health")
