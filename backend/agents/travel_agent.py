@@ -41,6 +41,35 @@ class Itinerary(BaseModel):
     days: list[DayPlan]
 
 
+class TripParams(BaseModel):
+    destination: str = Field(description="The travel destination mentioned in the message")
+    duration_days: int = Field(
+        description="Trip duration in days; estimate a reasonable value (e.g. 3) if not mentioned"
+    )
+    budget: float = Field(
+        description="Total trip budget as a number; estimate a reasonable mid-range budget for "
+        "this destination and duration if not mentioned"
+    )
+    currency: str = Field(
+        description="Currency code implied by the message, e.g. 'INR', 'USD'; default to 'USD' if unclear"
+    )
+    travel_style: str = Field(
+        description="Travel style implied by the message, e.g. 'backpacker', 'luxury', 'family'; "
+        "default to 'mid-range' if unclear"
+    )
+    interests: list[str] = Field(description="Interests or activities mentioned or implied by the message")
+
+
+def extract_trip_params(message: str) -> TripParams:
+    structured = get_chat_model().with_structured_output(TripParams)
+    prompt = (
+        "Extract structured trip-planning parameters from this message. Fill in reasonable "
+        "defaults for anything not explicitly mentioned.\n\n"
+        f"Message: {message}"
+    )
+    return structured.invoke([("human", prompt)])
+
+
 class TravelState(TypedDict):
     destination: str
     duration_days: int

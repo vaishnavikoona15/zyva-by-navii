@@ -27,3 +27,7 @@ def save_preference(
 
 def get_preferences(db: Session, user_id: uuid.UUID, agent: str) -> list[UserPreference]:
     return db.query(UserPreference).filter_by(user_id=user_id, agent=agent).all()
+
+
+def get_all_preferences(db: Session, user_id: uuid.UUID) -> list[UserPreference]:
+    return db.query(UserPreference).filter_by(user_id=user_id).all()
