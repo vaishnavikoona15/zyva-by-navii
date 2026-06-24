@@ -1,12 +1,16 @@
+import type { ReactNode } from "react";
+
 import { getAgentColor } from "@/lib/agents";
 
 type ChatMessageProps = {
   role: "user" | "assistant";
-  content: string;
+  content?: string;
   agent?: string;
+  wide?: boolean;
+  children?: ReactNode;
 };
 
-export default function ChatMessage({ role, content, agent }: ChatMessageProps) {
+export default function ChatMessage({ role, content, agent, wide, children }: ChatMessageProps) {
   if (role === "user") {
     return (
       <div className="flex justify-end">
@@ -20,7 +24,9 @@ export default function ChatMessage({ role, content, agent }: ChatMessageProps) 
   const color = getAgentColor(agent);
   return (
     <div className="flex justify-start">
-      <div className="max-w-[75%] rounded-2xl rounded-bl-sm border border-white/5 bg-white/3 px-4 py-2.5 text-sm text-zinc-100 shadow-lg shadow-black/20">
+      <div
+        className={`${wide ? "max-w-[92%]" : "max-w-[75%]"} rounded-2xl rounded-bl-sm border border-white/5 bg-white/3 px-4 py-2.5 text-sm text-zinc-100 shadow-lg shadow-black/20`}
+      >
         {agent && (
           <span
             className={`mb-1.5 inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ring-1 ${color.badge}`}
@@ -29,7 +35,7 @@ export default function ChatMessage({ role, content, agent }: ChatMessageProps) 
             {agent}
           </span>
         )}
-        <div>{content}</div>
+        {children ?? <div>{content}</div>}
       </div>
     </div>
   );
