@@ -1,8 +1,10 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import ChatMessage from "@/components/ChatMessage";
+import EmptyState from "@/components/EmptyState";
 import InputBar from "@/components/InputBar";
 import PreferenceBadge from "@/components/PreferenceBadge";
 import TypingIndicator from "@/components/TypingIndicator";
@@ -33,10 +35,11 @@ export default function LifestylePanel({ userId }: { userId: string | null }) {
     <>
       <div className="flex-1 space-y-3 overflow-y-auto px-5 py-6">
         {turns.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-1 text-center text-zinc-500">
-            <p className="text-sm">Ask about food, fitness, or your daily routine.</p>
-            <p className="text-xs">Zyva learns your preferences as you go.</p>
-          </div>
+          <EmptyState
+            icon={Sparkles}
+            title="Ask about food, fitness, or your daily routine."
+            subtitle="Zyva learns your preferences as you go."
+          />
         )}
         {turns.map((t, i) => {
           if (t.role === "user") return <ChatMessage key={i} role="user" content={t.content} />;

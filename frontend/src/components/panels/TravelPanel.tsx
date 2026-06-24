@@ -1,8 +1,10 @@
 "use client";
 
+import { Plane } from "lucide-react";
 import { useState } from "react";
 
 import BudgetBreakdownCards from "@/components/BudgetBreakdownCards";
+import EmptyState from "@/components/EmptyState";
 import ItineraryDay from "@/components/ItineraryDay";
 import TravelForm, { type TravelFormValues } from "@/components/TravelForm";
 import TypingIndicator from "@/components/TypingIndicator";
@@ -49,10 +51,11 @@ export default function TravelPanel({ userId }: { userId: string | null }) {
     <>
       <div className="flex-1 space-y-6 overflow-y-auto px-5 py-6">
         {!result && !loading && !error && (
-          <div className="flex h-full flex-col items-center justify-center gap-1 text-center text-zinc-500">
-            <p className="text-sm">Fill in your trip details below and Zyva will plan it.</p>
-            <p className="text-xs">Budget breakdown + a day-by-day itinerary, tailored to your style.</p>
-          </div>
+          <EmptyState
+            icon={Plane}
+            title="Fill in your trip details below and Zyva will plan it."
+            subtitle="Budget breakdown + a day-by-day itinerary, tailored to your style."
+          />
         )}
         {loading && <TypingIndicator />}
         {error && <p className="text-sm text-red-400">{error}</p>}

@@ -74,9 +74,17 @@ export type BuyingRecommendResponse = {
   recommendation: BuyingRecommendation;
 };
 
+export type RecentInteraction = {
+  agent: string;
+  content: string;
+  created_at: string;
+};
+
 export type MemoryRecallResponse = {
   summary: string;
   preferences_by_agent: Record<string, Record<string, unknown>>;
+  preference_confidence: Record<string, Record<string, number>>;
   interaction_count: number;
   confidence_snapshot: Record<string, number>;
+  recent_interactions: RecentInteraction[];
 };

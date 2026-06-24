@@ -13,7 +13,7 @@ type ChatMessageProps = {
 export default function ChatMessage({ role, content, agent, wide, children }: ChatMessageProps) {
   if (role === "user") {
     return (
-      <div className="flex justify-end">
+      <div className="flex animate-fade-in justify-end">
         <div className="max-w-[75%] rounded-2xl rounded-br-sm bg-gradient-to-br from-blue-600 to-purple-600 px-4 py-2.5 text-sm text-white shadow-lg shadow-blue-500/10">
           {content}
         </div>
@@ -23,7 +23,7 @@ export default function ChatMessage({ role, content, agent, wide, children }: Ch
 
   const color = getAgentColor(agent);
   return (
-    <div className="flex justify-start">
+    <div className="flex animate-fade-in justify-start">
       <div
         className={`${wide ? "max-w-[92%]" : "max-w-[75%]"} rounded-2xl rounded-bl-sm border border-white/5 bg-white/3 px-4 py-2.5 text-sm text-zinc-100 shadow-lg shadow-black/20`}
       >

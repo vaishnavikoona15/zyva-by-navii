@@ -14,8 +14,10 @@ class MemoryState(TypedDict):
     query: str
     summary: str
     preferences_by_agent: dict
+    preference_confidence: dict
     interaction_count: int
     confidence_snapshot: dict
+    recent_interactions: list
 
 
 def run_memory_agent(db: Session, user_id: uuid.UUID, query: str) -> dict:
@@ -30,14 +32,21 @@ def run_memory_agent(db: Session, user_id: uuid.UUID, query: str) -> dict:
         )
 
         preferences_by_agent: dict[str, dict] = defaultdict(dict)
+        preference_confidence: dict[str, dict] = defaultdict(dict)
         confidences_by_agent: dict[str, list] = defaultdict(list)
         for p in preferences:
             preferences_by_agent[p.agent][p.key] = p.value
+            preference_confidence[p.agent][p.key] = p.confidence
             confidences_by_agent[p.agent].append(p.confidence)
 
         confidence_snapshot = {
             agent: round(sum(values) / len(values), 2) for agent, values in confidences_by_agent.items()
         }
+
+        recent_interactions = [
+            {"agent": i.agent, "content": i.content, "created_at": i.created_at.isoformat()}
+            for i in interactions
+        ]
 
         if preferences or interactions:
             preferences_text = (
@@ -68,8 +77,10 @@ def run_memory_agent(db: Session, user_id: uuid.UUID, query: str) -> dict:
         return {
             "summary": summary,
             "preferences_by_agent": dict(preferences_by_agent),
+            "preference_confidence": dict(preference_confidence),
             "interaction_count": len(interactions),
             "confidence_snapshot": confidence_snapshot,
+            "recent_interactions": recent_interactions,
         }
 
     graph = StateGraph(MemoryState)
@@ -83,13 +94,17 @@ def run_memory_agent(db: Session, user_id: uuid.UUID, query: str) -> dict:
             "query": query,
             "summary": "",
             "preferences_by_agent": {},
+            "preference_confidence": {},
             "interaction_count": 0,
             "confidence_snapshot": {},
+            "recent_interactions": [],
         }
     )
     return {
         "summary": result["summary"],
         "preferences_by_agent": result["preferences_by_agent"],
+        "preference_confidence": result["preference_confidence"],
         "interaction_count": result["interaction_count"],
         "confidence_snapshot": result["confidence_snapshot"],
+        "recent_interactions": result["recent_interactions"],
     }

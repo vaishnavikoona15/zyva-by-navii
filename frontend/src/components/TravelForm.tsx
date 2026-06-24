@@ -83,10 +83,10 @@ export default function TravelForm({ values, onChange, onSubmit, disabled }: Tra
               key={interest}
               type="button"
               onClick={() => toggleInterest(interest)}
-              className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+              className={`rounded-full border px-3 py-1 text-xs font-medium transition-all ${
                 active
-                  ? "border-blue-400/40 bg-blue-500/15 text-blue-200"
-                  : "border-white/10 bg-white/2 text-zinc-400 hover:text-zinc-200"
+                  ? "border-transparent bg-gradient-to-br from-blue-500 to-purple-600 text-white shadow-md shadow-blue-500/30"
+                  : "border-white/10 bg-white/2 text-zinc-400 hover:border-white/20 hover:text-zinc-200"
               }`}
             >
               {interest}

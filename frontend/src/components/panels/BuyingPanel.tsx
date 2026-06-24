@@ -1,8 +1,10 @@
 "use client";
 
+import { ShoppingBag } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import ChatMessage from "@/components/ChatMessage";
+import EmptyState from "@/components/EmptyState";
 import InputBar from "@/components/InputBar";
 import ProductCard from "@/components/ProductCard";
 import TypingIndicator from "@/components/TypingIndicator";
@@ -33,10 +35,11 @@ export default function BuyingPanel({ userId }: { userId: string | null }) {
     <>
       <div className="flex-1 space-y-3 overflow-y-auto px-5 py-6">
         {turns.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-1 text-center text-zinc-500">
-            <p className="text-sm">Tell Zyva what you want to buy and your budget.</p>
-            <p className="text-xs">It researches and picks exactly one product for you.</p>
-          </div>
+          <EmptyState
+            icon={ShoppingBag}
+            title="Tell Zyva what you want to buy and your budget."
+            subtitle="It researches and picks exactly one product for you."
+          />
         )}
         {turns.map((t, i) =>
           t.role === "user" ? (

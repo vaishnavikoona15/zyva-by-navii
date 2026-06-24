@@ -2,7 +2,7 @@ import type { BuyingRecommendation } from "@/lib/types";
 
 export default function ProductCard({ recommendation }: { recommendation: BuyingRecommendation }) {
   return (
-    <div className="space-y-3">
+    <div className="space-y-3 rounded-2xl border border-emerald-500/25 bg-emerald-500/3 p-3 shadow-[0_0_24px_-8px_rgba(16,185,129,0.45)]">
       <div className="flex items-baseline justify-between gap-3">
         <h3 className="text-sm font-semibold text-white">{recommendation.product}</h3>
         <span className="shrink-0 rounded-full bg-orange-500/10 px-2 py-0.5 text-xs font-medium text-orange-300 ring-1 ring-orange-500/30">

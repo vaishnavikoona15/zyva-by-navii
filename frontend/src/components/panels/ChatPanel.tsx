@@ -1,8 +1,10 @@
 "use client";
 
+import { MessageCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import ChatMessage from "@/components/ChatMessage";
+import EmptyState from "@/components/EmptyState";
 import InputBar from "@/components/InputBar";
 import TypingIndicator from "@/components/TypingIndicator";
 import { useAgentChat } from "@/hooks/useAgentChat";
@@ -29,10 +31,11 @@ export default function ChatPanel({ userId }: { userId: string | null }) {
     <>
       <div className="flex-1 space-y-3 overflow-y-auto px-5 py-6">
         {turns.length === 0 && (
-          <div className="flex h-full flex-col items-center justify-center gap-1 text-center text-zinc-500">
-            <p className="text-sm">Ask about travel, food, shopping, or anything else.</p>
-            <p className="text-xs">Zyva routes it to the right agent automatically.</p>
-          </div>
+          <EmptyState
+            icon={MessageCircle}
+            title="Ask about travel, food, shopping, or anything else."
+            subtitle="Zyva routes it to the right agent automatically."
+          />
         )}
         {turns.map((t, i) =>
           t.role === "user" ? (

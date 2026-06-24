@@ -17,8 +17,10 @@ class MemoryRecallRequest(BaseModel):
 class MemoryRecallResponse(BaseModel):
     summary: str
     preferences_by_agent: dict
+    preference_confidence: dict
     interaction_count: int
     confidence_snapshot: dict
+    recent_interactions: list[dict]
 
 
 @router.post("/memory/recall", response_model=MemoryRecallResponse)
