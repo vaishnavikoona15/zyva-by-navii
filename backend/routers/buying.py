@@ -17,6 +17,8 @@ class BuyingRecommendRequest(BaseModel):
 class BuyingRecommendResponse(BaseModel):
     research: dict
     recommendation: dict
+    sources: list[dict]
+    results_analyzed: int
 
 
 @router.post("/buying/recommend", response_model=BuyingRecommendResponse)

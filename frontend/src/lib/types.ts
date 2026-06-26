@@ -69,9 +69,17 @@ export type BuyingRecommendation = {
   verdict: string;
 };
 
+export type WebSource = {
+  title: string;
+  link: string;
+  snippet: string;
+};
+
 export type BuyingRecommendResponse = {
   research: BuyingResearch;
   recommendation: BuyingRecommendation;
+  sources: WebSource[];
+  results_analyzed: number;
 };
 
 export type RecentInteraction = {

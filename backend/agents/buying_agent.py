@@ -4,6 +4,7 @@ from langgraph.graph import END, START, StateGraph
 from pydantic import BaseModel, Field
 
 from services.llm import get_chat_model
+from services.search_service import search_product
 
 
 class ResearchResult(BaseModel):
@@ -11,8 +12,8 @@ class ResearchResult(BaseModel):
     budget: str = Field(description="The budget constraint extracted from the query, e.g. 'under ₹8000'")
     requirements: list[str] = Field(description="Key requirements extracted from the query")
     market_insights: list[str] = Field(
-        description="What a consensus of 500+ verified buyer reviews would say about the top "
-        "options in this category and budget"
+        description="Common praise, common complaints, recommended products, and price "
+        "observations actually found in the real web results provided"
     )
 
 
@@ -30,18 +31,29 @@ class BuyingState(TypedDict):
     preferences_text: str
     research: dict
     recommendation: dict
+    sources: list[dict]
+    results_analyzed: int
 
 
 def research_node(state: BuyingState) -> dict:
+    search = search_product(state["query"])
+
     structured = get_chat_model().with_structured_output(ResearchResult)
     prompt = (
         "You are Zyva's buying agent. Analyze this shopping query and extract the product "
-        "category, budget, and key requirements. Then summarize what a consensus of 500+ "
-        "verified buyer reviews would say about the top options in this category and budget.\n\n"
-        f"Query: {state['query']}"
+        "category, budget, and key requirements. Then, based on these real web reviews and "
+        "discussions, summarize the actual common praise, common complaints, recommended "
+        "products, and price observations you see — don't invent anything not supported by "
+        "the results below.\n\n"
+        f"Query: {state['query']}\n\n"
+        f"Based on these real web reviews and discussions:\n{search['insights']}"
     )
     result = structured.invoke([("human", prompt)])
-    return {"research": result.model_dump()}
+    return {
+        "research": result.model_dump(),
+        "sources": search["sources"],
+        "results_analyzed": search["results_analyzed"],
+    }
 
 
 def recommend_node(state: BuyingState) -> dict:
@@ -73,6 +85,18 @@ buying_graph = graph.compile()
 def run_buying_agent(query: str, preferences: list[dict]) -> dict:
     preferences_text = "\n".join(f"- {p['key']}: {p['value']}" for p in preferences)
     result = buying_graph.invoke(
-        {"query": query, "preferences_text": preferences_text, "research": {}, "recommendation": {}}
+        {
+            "query": query,
+            "preferences_text": preferences_text,
+            "research": {},
+            "recommendation": {},
+            "sources": [],
+            "results_analyzed": 0,
+        }
     )
-    return {"research": result["research"], "recommendation": result["recommendation"]}
+    return {
+        "research": result["research"],
+        "recommendation": result["recommendation"],
+        "sources": result["sources"],
+        "results_analyzed": result["results_analyzed"],
+    }

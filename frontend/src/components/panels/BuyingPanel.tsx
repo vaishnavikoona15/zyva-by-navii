@@ -8,6 +8,7 @@ import EmptyState from "@/components/EmptyState";
 import InputBar from "@/components/InputBar";
 import ProductCard from "@/components/ProductCard";
 import TypingIndicator from "@/components/TypingIndicator";
+import WebSources from "@/components/WebSources";
 import { useAgentChat } from "@/hooks/useAgentChat";
 import { AGENT_TABS } from "@/lib/agents";
 import type { BuyingRecommendResponse } from "@/lib/types";
@@ -46,7 +47,12 @@ export default function BuyingPanel({ userId }: { userId: string | null }) {
             <ChatMessage key={i} role="user" content={t.content} />
           ) : (
             <ChatMessage key={i} role="assistant" agent="buying" wide>
-              {t.data && <ProductCard recommendation={t.data.recommendation} />}
+              {t.data && (
+                <>
+                  <ProductCard recommendation={t.data.recommendation} />
+                  <WebSources sources={t.data.sources} resultsAnalyzed={t.data.results_analyzed} />
+                </>
+              )}
             </ChatMessage>
           ),
         )}

@@ -22,4 +22,9 @@ def handle_buying_query(db: Session, user_id: uuid.UUID, query: str) -> dict:
     if product:
         save_preference(db, user_id, "buying", "preferred_brand", product.split(" ")[0], confidence=0.4)
 
-    return {"research": research, "recommendation": recommendation}
+    return {
+        "research": research,
+        "recommendation": recommendation,
+        "sources": result["sources"],
+        "results_analyzed": result["results_analyzed"],
+    }
